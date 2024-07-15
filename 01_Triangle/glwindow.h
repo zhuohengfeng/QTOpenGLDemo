@@ -1,15 +1,10 @@
-//
-// Created by Rokid on 2024/7/15.
-//
-
 #ifndef QTOPENGLDEMO_GLWINDOW_H
 #define QTOPENGLDEMO_GLWINDOW_H
 
+#include "base.h"
 #include <QOpenGLWindow>
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
-QT_FORWARD_DECLARE_CLASS(QOpenGLBuffer)
-QT_FORWARD_DECLARE_CLASS(QOpenGLVertexArrayObject)
 
 class GLWindow final : public QOpenGLWindow
 {
@@ -23,12 +18,11 @@ public:
     void resizeGL(int w, int h) override;
     void paintGL() override;
 
-
 private:
     QOpenGLShaderProgram *m_program = nullptr;
-    QOpenGLBuffer *m_vbo = nullptr;
-    QOpenGLVertexArrayObject *m_vao = nullptr;
 
+    GLuint m_vbo;
+    GLuint m_vao;
 };
 
 
