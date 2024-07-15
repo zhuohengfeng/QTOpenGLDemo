@@ -1,10 +1,5 @@
 #include "glwindow.h"
 
-#include <QOpenGLShaderProgram>
-#include <QOpenGLBuffer>
-#include <QOpenGLContext>
-#include <QOpenGLExtraFunctions>
-
 static const char* vertexShaderSource = R"(
     layout (location = 0) in vec3 aPos;
     layout (location = 1) in vec3 aColor;
@@ -60,6 +55,7 @@ void GLWindow::initializeGL() {
     f->glGenBuffers(1, &m_vbo);
     f->glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     f->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
     f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
                              reinterpret_cast<void *>(0));
     f->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),

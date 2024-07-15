@@ -1,11 +1,5 @@
 #include "glwindow.h"
 
-#include <QOpenGLTexture>
-#include <QOpenGLShaderProgram>
-#include <QOpenGLBuffer>
-#include <QOpenGLContext>
-#include <QOpenGLExtraFunctions>
-
 static const char* vertexShaderSource = R"(
     layout (location = 0) in vec3 aPos;
     layout (location = 1) in vec3 aColor;

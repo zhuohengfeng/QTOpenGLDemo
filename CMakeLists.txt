@@ -23,3 +23,4 @@ find_package(Qt6 COMPONENTS
 add_subdirectory(common)
 add_subdirectory(01_Triangle)
 add_subdirectory(02_Texture)
+add_subdirectory(03_MVP)

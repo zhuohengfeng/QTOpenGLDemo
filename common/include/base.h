@@ -4,6 +4,12 @@
 #include <QOpenGLTexture>
 #include <QOpenGLContext>
 #include <QDebug>
+#include <QOpenGLWindow>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLBuffer>
+#include <QOpenGLContext>
+#include <QOpenGLExtraFunctions>
+#include "ffImage.h"
 
 /**
  * Get the shader string

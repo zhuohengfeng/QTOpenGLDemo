@@ -2,8 +2,7 @@
 #define QTOPENGLDEMO_GLWINDOW_H
 
 #include "base.h"
-#include "ffImage.h"
-#include <QOpenGLWindow>
+
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
 
