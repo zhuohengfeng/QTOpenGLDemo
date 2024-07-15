@@ -3,6 +3,7 @@
 
 #include <QOpenGLTexture>
 #include <QOpenGLContext>
+#include <QDebug>
 
 /**
  * Get the shader string
