@@ -34,10 +34,10 @@ static const char *fragmentShaderSource = R"(
 
 float vertices[] =
         {
-                0.5f,  0.5f, 0.0f,    1.0f , 0.0f , 0.0f,   1.0f , 1.0f,
-                0.5f, -0.5f, 0.0f,    0.0f , 1.0f , 0.0f,   1.0f , 0.0f,
-                -0.5f,  -0.5f, 0.0f,  0.0f , 0.0f , 1.0f,   0.0f , 0.0f,
-                -0.5f, 0.5f, 0.0f,    0.0f , 1.0f , 0.0f,   0.0f , 1.0f,
+                1.0f,  1.0f, 0.0f,    1.0f , 0.0f , 0.0f,   1.0f , 1.0f,
+                1.0f, -1.0f, 0.0f,    0.0f , 1.0f , 0.0f,   1.0f , 0.0f,
+                -1.0f,  -1.0f, 0.0f,  0.0f , 0.0f , 1.0f,   0.0f , 0.0f,
+                -1.0f, 1.0f, 0.0f,    0.0f , 1.0f , 0.0f,   0.0f , 1.0f,
         };
 
 unsigned int indices[] =
@@ -58,7 +58,7 @@ GLWindow::~GLWindow() {
 void GLWindow::initializeGL() {
     QOpenGLExtraFunctions *f = QOpenGLContext::currentContext()->extraFunctions();
 
-    m_Image = ffImage::readFromFile("E:/Cpp/QTOpenGLDemo/resource/marker1.png");
+    m_Image = ffImage::readFromFile("../../resource/marker1.png");
     f->glGenTextures(1, &m_texture);
     f->glBindTexture(GL_TEXTURE_2D, m_texture);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -66,7 +66,7 @@ void GLWindow::initializeGL() {
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     f->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Image->getWidth(), m_Image->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, m_Image->getData());
-
+    qDebug() << "Image w=" << m_Image->getWidth() << ", h=" << m_Image->getHeight();
 
     delete m_program;
     m_program = new QOpenGLShaderProgram;
@@ -103,17 +103,20 @@ void GLWindow::initializeGL() {
     f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     f->glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    f->glEnable(GL_DEPTH_TEST);
-//    f->glEnable(GL_CULL_FACE);
+
 }
 
 void GLWindow::resizeGL(int w, int h) {
     QOpenGLExtraFunctions *f = QOpenGLContext::currentContext()->extraFunctions();
+    qDebug() << "resizeGL w=" << w << ", h=" << h;
     f->glViewport(0, 0, w, h);
 }
 
 void GLWindow::paintGL() {
     QOpenGLExtraFunctions *f = QOpenGLContext::currentContext()->extraFunctions();
+
+    f->glEnable(GL_DEPTH_TEST);
+//    f->glEnable(GL_CULL_FACE);
 
     f->glClearColor(0, 0, 0, 1);
     f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -123,8 +126,8 @@ void GLWindow::paintGL() {
     f->glBindTexture(GL_TEXTURE_2D, m_texture);
 
     f->glBindVertexArray(m_vao);
-
     f->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
     f->glBindVertexArray(0);
+
+    m_program->release();
 }

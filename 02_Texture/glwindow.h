@@ -20,7 +20,7 @@ public:
     void paintGL() override;
 
 private:
-    QOpenGLShaderProgram *m_program = nullptr;
+    QOpenGLShaderProgram *m_program{nullptr};
 
     GLuint m_texture;
     ffImage* m_Image{nullptr};
