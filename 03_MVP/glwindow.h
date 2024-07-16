@@ -19,11 +19,21 @@ protected:
     void paintGL() override;
 
 private:
+    const int _width = 800;
+    const int _height = 600;
 
     QOpenGLShaderProgram* m_Program{nullptr};
+    QElapsedTimer timer;
+
+    GLuint m_texture;
+    ffImage* m_Image{nullptr};
 
     GLuint m_vbo;
     GLuint m_vao;
+
+    GLint modelMatrixHandle = 0;
+    GLint viewMatrixHandle = 0;
+    GLint projMatrixHandle = 0;
 };
 
 

@@ -9,7 +9,11 @@
 #include <QOpenGLBuffer>
 #include <QOpenGLContext>
 #include <QOpenGLExtraFunctions>
+#include <QElapsedTimer>
 #include "ffImage.h"
+#include"glm/glm.hpp"
+#include"glm/gtc/matrix_transform.hpp"
+#include"glm/gtc/type_ptr.hpp"
 
 /**
  * Get the shader string
