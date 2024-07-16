@@ -8,11 +8,9 @@ const static char* vertexShaderStr = R"(
     layout(location=0) in vec3 aPos;
     layout(location=1) in vec2 aUV;
     out vec2 outUV;
-
     uniform mat4 _projMatrix;
     uniform mat4 _viewMatrix;
     uniform mat4 _modelMatrix;
-
     void main()
     {
         gl_Position = _projMatrix * _viewMatrix * _modelMatrix * vec4(aPos.x, aPos.y, aPos.z, 1.0);
@@ -176,4 +174,20 @@ void GLWindow::paintGL() {
     f->glBindTexture(GL_TEXTURE_2D, 0);
     f->glBindVertexArray(0);
     m_Program->release();
+}
+
+void GLWindow::keyPressEvent(QKeyEvent *event) {
+    if (event->key() == Qt::Key_W) {
+        qDebug() << "Pressed Key_W";
+    } else if (event->key() == Qt::Key_S) {
+        qDebug() << "Pressed Key_S";
+    } else if (event->key() == Qt::Key_A) {
+        qDebug() << "Pressed Key_A";
+    } else if (event->key() == Qt::Key_D) {
+        qDebug() << "Pressed Key_D";
+    }
+}
+
+void GLWindow::mouseMoveEvent(QMouseEvent *event) {
+    qDebug() << "mouseMoveEvent pos : " << event->pos();
 }

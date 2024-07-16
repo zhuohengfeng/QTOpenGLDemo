@@ -22,6 +22,10 @@ protected:
     void resizeGL(int w, int h) override;
     void paintGL() override;
 
+    // 监听按键和鼠标事件
+    void keyPressEvent(QKeyEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+
 private:
 
     QOpenGLShaderProgram* m_Program{nullptr};
@@ -38,6 +42,8 @@ private:
     GLint m_projMatrixHandle;
     glm::mat4 m_viewMatrix;
     glm::mat4 m_projMatrix;
+
+    Camera m_camera;
 };
 
 
