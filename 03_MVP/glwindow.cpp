@@ -77,7 +77,7 @@ float vertices[] = {
 
 
 GLWindow::GLWindow() {
-    resize(800, 600);
+    resize(_width, _height);
 }
 GLWindow::~GLWindow() {
     makeCurrent();
@@ -119,7 +119,7 @@ void GLWindow::initializeGL() {
     f->glEnableVertexAttribArray(0);
     f->glEnableVertexAttribArray(1);
     f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,5 * sizeof(GLfloat), reinterpret_cast<void *>(0));
-    f->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,5 * sizeof(GLfloat), reinterpret_cast<void *>(3 * sizeof(GLfloat)));
+    f->glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,5 * sizeof(GLfloat), reinterpret_cast<void *>(3 * sizeof(GLfloat)));
 
     f->glBindVertexArray(0);
     f->glBindBuffer(GL_ARRAY_BUFFER, 0);
