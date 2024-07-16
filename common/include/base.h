@@ -39,4 +39,20 @@ static QByteArray versionedShaderCode(const char *src)
     return versionedSrc;
 }
 
+static QMatrix4x4 glmMatToQMat(glm::mat4 glmMat) {
+//    return QMatrix4x4(
+//            glmMat[0][0], glmMat[1][0], glmMat[2][0], glmMat[3][0],
+//            glmMat[0][1], glmMat[1][1], glmMat[2][1], glmMat[3][1],
+//            glmMat[0][2], glmMat[1][2], glmMat[2][2], glmMat[3][2],
+//            glmMat[0][3], glmMat[1][3], glmMat[2][3], glmMat[3][3]
+//    );
+
+    return QMatrix4x4(
+            glmMat[0][0], glmMat[0][1], glmMat[0][2], glmMat[0][3],
+            glmMat[1][0], glmMat[1][1], glmMat[1][2], glmMat[2][3],
+            glmMat[2][0], glmMat[2][1], glmMat[2][2], glmMat[2][3],
+            glmMat[3][0], glmMat[3][1], glmMat[3][2], glmMat[3][3]
+    );
+}
+
 #endif //QTOPENGLDEMO_BASE_H
