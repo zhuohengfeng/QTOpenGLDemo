@@ -6,7 +6,6 @@
 #include "glwindow.h"
 
 int main(int argc, char* argv[]) {
-
     QApplication application(argc, argv);
     GLWindow glWindow;
     glWindow.show();

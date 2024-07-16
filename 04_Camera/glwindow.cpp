@@ -90,7 +90,8 @@ glm::vec3 modelVecs[] = {
 GLWindow::GLWindow() {
     resize(WIDTH, HEIGHT);
 
-    m_viewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // eye -- center -- up
+    m_camera.lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    m_camera.setSpeed(0.05f);
     m_projMatrix = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 }
 
@@ -159,13 +160,14 @@ void GLWindow::paintGL() {
     f->glBindVertexArray(m_vao);
     f->glBindTexture(GL_TEXTURE_2D, m_texture);
 
+    m_camera.update();
     for (int i = 0; i < 10; i++) {
         glm::mat4 modelMatrix = glm::mat4(1.0);
         modelMatrix = glm::translate(modelMatrix, modelVecs[i]);
         modelMatrix = glm::rotate(modelMatrix, glm::radians((float)timer.elapsed() * (i+1) * 10), glm::vec3(0.0f, 1.0f, 0.0f));
 
         f->glUniformMatrix4fv(m_modelMatrixHandle, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-        f->glUniformMatrix4fv(m_viewMatrixHandle, 1, GL_FALSE, glm::value_ptr(m_viewMatrix));
+        f->glUniformMatrix4fv(m_viewMatrixHandle, 1, GL_FALSE, glm::value_ptr(m_camera.getMatrix()));
         f->glUniformMatrix4fv(m_projMatrixHandle, 1, GL_FALSE, glm::value_ptr(m_projMatrix));
 
         f->glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -178,16 +180,18 @@ void GLWindow::paintGL() {
 
 void GLWindow::keyPressEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_W) {
-        qDebug() << "Pressed Key_W";
+        m_camera.move(CAMERA_MOVE::MOVE_FRONT);
     } else if (event->key() == Qt::Key_S) {
-        qDebug() << "Pressed Key_S";
+        m_camera.move(CAMERA_MOVE::MOVE_BACK);
     } else if (event->key() == Qt::Key_A) {
-        qDebug() << "Pressed Key_A";
+        m_camera.move(CAMERA_MOVE::MOVE_LEFT);
     } else if (event->key() == Qt::Key_D) {
-        qDebug() << "Pressed Key_D";
+        m_camera.move(CAMERA_MOVE::MOVE_RIGHT);
     }
+    update(); // 触发渲染paintGL
 }
 
 void GLWindow::mouseMoveEvent(QMouseEvent *event) {
-    qDebug() << "mouseMoveEvent pos : " << event->pos();
+    m_camera.onMouseMove(event->pos().x(), event->pos().y());
+    update(); // 触发渲染paintGL
 }

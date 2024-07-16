@@ -40,7 +40,7 @@ private:
     GLint m_modelMatrixHandle;
     GLint m_viewMatrixHandle;
     GLint m_projMatrixHandle;
-    glm::mat4 m_viewMatrix;
+
     glm::mat4 m_projMatrix;
 
     Camera m_camera;

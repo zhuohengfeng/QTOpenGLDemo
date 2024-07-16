@@ -1,6 +1,9 @@
 #ifndef QTOPENGLDEMO_BASE_H
 #define QTOPENGLDEMO_BASE_H
 
+#include <iostream>
+#include <string>
+
 #include <QOpenGLTexture>
 #include <QOpenGLContext>
 #include <QDebug>
