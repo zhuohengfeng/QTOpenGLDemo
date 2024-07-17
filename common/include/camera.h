@@ -31,6 +31,10 @@ public:
         return m_vMatrix;
     }
 
+    glm::vec3 getPosition() const {
+        return m_position;
+    }
+
     void setSpeed(float speed) {
         m_speed = speed;
     }

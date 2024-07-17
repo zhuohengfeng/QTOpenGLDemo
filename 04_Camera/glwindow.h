@@ -28,7 +28,6 @@ protected:
 
 private:
 
-    QOpenGLShaderProgram* m_Program{nullptr};
     QElapsedTimer timer;
 
     GLuint m_texture;
@@ -37,11 +36,9 @@ private:
     GLuint m_vbo;
     GLuint m_vao;
 
-    GLint m_modelMatrixHandle;
-    GLint m_viewMatrixHandle;
-    GLint m_projMatrixHandle;
-
     glm::mat4 m_projMatrix;
+
+    Shader m_shader;
 
     Camera m_camera;
 };

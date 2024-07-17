@@ -10,7 +10,6 @@ set(CMAKE_PREFIX_PATH "C:/Qt/6.7.2/mingw_64")
 
 set(GLM_ROOT D:/Projects/ThirdpartyLibs/glm-0.9.9.8/glm)
 
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/common/include)
 
 find_package(Qt6 COMPONENTS
@@ -25,4 +24,4 @@ add_subdirectory(01_Triangle)
 add_subdirectory(02_Texture)
 add_subdirectory(03_MVP)
 add_subdirectory(04_Camera)
-add_subdirectory(05_Light)
+add_subdirectory(05_PhongLight)

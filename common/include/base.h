@@ -18,6 +18,7 @@
 
 #include "ffImage.h"
 #include "camera.h"
+#include "shader.h"
 
 #include"glm/glm.hpp"
 #include"glm/gtc/matrix_transform.hpp"
@@ -38,6 +39,22 @@ static QByteArray versionedShaderCode(const char *src)
     versionedSrc.append(src);
     return versionedSrc;
 }
+
+static void setMatrix(QOpenGLExtraFunctions* f, const std::string & _name , glm::mat4 _matrix)
+{
+
+}
+
+static void setVec3(const std::string& _name, glm::vec3 _vec3)
+{
+
+}
+
+static void setFloat(const std::string& _name, float _f)
+{
+
+}
+
 
 static QMatrix4x4 glmMatToQMat(glm::mat4 glmMat) {
 //    return QMatrix4x4(

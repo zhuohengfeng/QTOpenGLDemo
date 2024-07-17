@@ -97,23 +97,15 @@ GLWindow::GLWindow() {
 
 GLWindow::~GLWindow() {
     makeCurrent();
-    m_Program->release();
-    delete m_Program;
+    m_shader.releaseShader();
 }
 
 void GLWindow::initializeGL() {
     QOpenGLExtraFunctions* f = QOpenGLContext::currentContext()->extraFunctions();
 
     // 创建Program
-    m_Program = new QOpenGLShaderProgram();
-    m_Program->addShaderFromSourceCode(QOpenGLShader::Vertex, versionedShaderCode(vertexShaderStr));
-    m_Program->addShaderFromSourceCode(QOpenGLShader::Fragment, versionedShaderCode(fragmentShaderStr));
-    m_Program->link();
-    m_Program->bind();
-    m_modelMatrixHandle = m_Program->uniformLocation("_modelMatrix");
-    m_viewMatrixHandle = m_Program->uniformLocation("_viewMatrix");
-    m_projMatrixHandle = m_Program->uniformLocation("_projMatrix");
-    m_Program->release();
+    m_shader.createShader();
+    m_shader.initShader(vertexShaderStr, fragmentShaderStr);
 
     // 绑定纹理
     m_Image = ffImage::readFromFile("../../resource/wall.jpg");
@@ -152,7 +144,7 @@ void GLWindow::resizeGL(int w, int h) {
 void GLWindow::paintGL() {
     QOpenGLExtraFunctions* f = QOpenGLContext::currentContext()->extraFunctions();
 
-    m_Program->bind();
+    m_shader.start();
     f->glEnable(GL_DEPTH_TEST);
     f->glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -166,16 +158,16 @@ void GLWindow::paintGL() {
         modelMatrix = glm::translate(modelMatrix, modelVecs[i]);
         modelMatrix = glm::rotate(modelMatrix, glm::radians((float)timer.elapsed() * (i+1) * 10), glm::vec3(0.0f, 1.0f, 0.0f));
 
-        f->glUniformMatrix4fv(m_modelMatrixHandle, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-        f->glUniformMatrix4fv(m_viewMatrixHandle, 1, GL_FALSE, glm::value_ptr(m_camera.getMatrix()));
-        f->glUniformMatrix4fv(m_projMatrixHandle, 1, GL_FALSE, glm::value_ptr(m_projMatrix));
+        m_shader.setUniformMatrix(f, "_modelMatrix", modelMatrix);
+        m_shader.setUniformMatrix(f, "_viewMatrix", m_camera.getMatrix());
+        m_shader.setUniformMatrix(f, "_projMatrix", m_projMatrix);
 
         f->glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
     f->glBindTexture(GL_TEXTURE_2D, 0);
     f->glBindVertexArray(0);
-    m_Program->release();
+    m_shader.end();
 }
 
 void GLWindow::keyPressEvent(QKeyEvent *event) {
