@@ -42,7 +42,6 @@ const static char* cubeFragmentShaderStr = R"(
 
         float m_shiness;
     };
-
     uniform Material myMaterial;
 
     struct Light
@@ -52,10 +51,10 @@ const static char* cubeFragmentShaderStr = R"(
         vec3 m_diffuse;
         vec3 m_specular;
     };
-
     uniform Light myLight;
 
     uniform sampler2D ourTexture;
+    // 观察点 相机位置
     uniform vec3 view_pos;
 
     void main()
@@ -65,18 +64,18 @@ const static char* cubeFragmentShaderStr = R"(
 
         //漫反射
         vec3 _normal = normalize(outNormal);
-        vec3 _lightDir = normalize(myLight.m_pos - outFragPos);
-        float _diff = max(dot(_normal , _lightDir) , 0.0f);
+        vec3 _lightDir = normalize(myLight.m_pos - outFragPos); // 光入射方向
+        float _diff = max(dot(_normal , _lightDir) , 0.0f); // 入射光线和法线的夹角大小
         vec3 _diffuse = myLight.m_diffuse * _diff * myMaterial.m_diffuse;
 
         //镜面反射
         float _specular_strength = 0.5;
-        vec3 _viewDir = normalize(view_pos - outFragPos);
-        vec3 _reflectDir = reflect(-_lightDir , outNormal);
+        vec3 _viewDir = normalize(view_pos - outFragPos); // 片元和眼镜的方向
+        vec3 _reflectDir = reflect(-_lightDir , outNormal); // 反射方向
 
-        float _spec = pow(max(dot(_viewDir , _reflectDir) , 0.0f) , myMaterial.m_shiness);
+        float _spec = pow(max(dot(_viewDir , _reflectDir) , 0.0f) , myMaterial.m_shiness); // 计算反射强度
 
-        vec3 _sepcular = myLight.m_specular * _spec * myMaterial.m_specular;
+        vec3 _sepcular = myLight.m_specular * _spec * myMaterial.m_specular; // 镜面反射大小
 
         vec3 result = _ambient  + _diffuse + _sepcular;
         FragColor = texture(ourTexture , outUV) * vec4(result ,1.0f);
@@ -86,26 +85,21 @@ const static char* cubeFragmentShaderStr = R"(
 //
 const static char* sunVertexShaderStr = R"(
     layout(location=0) in vec3 aPos;
-    layout(location=1) in vec2 aUV;
-    out vec2 outUV;
     uniform mat4 _projMatrix;
     uniform mat4 _viewMatrix;
     uniform mat4 _modelMatrix;
     void main()
     {
         gl_Position = _projMatrix * _viewMatrix * _modelMatrix * vec4(aPos.x, aPos.y, aPos.z, 1.0);
-        outUV = aUV;
     };
 )";
 
 // 光源是白光
 const static char* sunFragmentShaderStr = R"(
-    in vec2 outUV;
     out vec4 FragColor;
-    uniform sampler2D ourTexture;
     void main()
     {
-        FragColor = vec4(1.0f , 1.0f ,1.0f ,1.0f );
+        FragColor = vec4(1.0f, 1.0f, 0.0f ,1.0f );
     };
 )";
 

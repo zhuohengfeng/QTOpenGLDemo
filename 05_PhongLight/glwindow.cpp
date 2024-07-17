@@ -81,50 +81,54 @@ void GLWindow::paintGL() {
     glm::mat4 _modelMatrix(1.0f);
     _modelMatrix = glm::translate(_modelMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
 
-    // 绑定纹理
-    f->glBindTexture(GL_TEXTURE_2D, m_texture);
 
+
+    // ---------------绘制有光照效果的立方体---------------
     m_cubeShader.start();
     m_cubeShader.setUniformVec3(f, "view_pos", m_camera.getPosition());
 
     //传入光照属性
 //    light_color = glm::vec3((float)timer.elapsed() * 0.8f, (float)timer.elapsed() * 0.5f, (float)timer.elapsed() * 0.7f);
     m_cubeShader.setUniformVec3(f, "myLight.m_ambient" , light_color * glm::vec3(0.1f));
-    m_cubeShader.setUniformVec3(f, "myLight.m_diffuse", light_color * glm::vec3(0.7f));
-    m_cubeShader.setUniformVec3(f, "myLight.m_specular", light_color * glm::vec3(0.5f));
+    m_cubeShader.setUniformVec3(f, "myLight.m_diffuse", light_color * glm::vec3(0.7f)); // 0.7f
+    m_cubeShader.setUniformVec3(f, "myLight.m_specular", light_color * glm::vec3(1.0f)); // 0.5f
     m_cubeShader.setUniformVec3(f, "myLight.m_pos", light_pos);
 
     //传入物体材质属性
     m_cubeShader.setUniformVec3(f, "myMaterial.m_ambient", glm::vec3(0.1f));
-    m_cubeShader.setUniformVec3(f, "myMaterial.m_diffuse", glm::vec3(0.7f));
-    m_cubeShader.setUniformVec3(f, "myMaterial.m_specular", glm::vec3(0.8f));
-    m_cubeShader.setUniformFloat(f, "myMaterial.m_shiness" , 32);
+    m_cubeShader.setUniformVec3(f, "myMaterial.m_diffuse", glm::vec3(0.7f)); // 0.7f
+    m_cubeShader.setUniformVec3(f, "myMaterial.m_specular", glm::vec3(1.0f)); // 0.8f
+    m_cubeShader.setUniformFloat(f, "myMaterial.m_shiness" , 16); // 32
 
     m_cubeShader.setUniformMatrix(f, "_modelMatrix", _modelMatrix);
     m_cubeShader.setUniformMatrix(f, "_viewMatrix", m_camera.getMatrix());
     m_cubeShader.setUniformMatrix(f, "_projMatrix", m_projMatrix);
+    // 绑定纹理
     f->glBindVertexArray(m_vao);
+    f->glBindTexture(GL_TEXTURE_2D, m_texture);
     f->glDrawArrays(GL_TRIANGLES, 0, 36);
+    f->glBindTexture(GL_TEXTURE_2D, 0);
+    f->glBindVertexArray(0);
+
     m_cubeShader.end();
 
-
-
+    // --------------绘制一个太阳-------------------
     m_sunShader.start();
+    _modelMatrix = glm::mat4(1.0f);
+    _modelMatrix = glm::translate(_modelMatrix, light_pos);   // 设置光源(太阳位置)
+    _modelMatrix = glm::scale(_modelMatrix, glm::vec3(0.3f, 0.3f, 0.3f)); // 缩放太阳大小
     m_sunShader.setUniformMatrix(f, "_modelMatrix", _modelMatrix);
     m_sunShader.setUniformMatrix(f, "_viewMatrix", m_camera.getMatrix());
     m_sunShader.setUniformMatrix(f, "_projMatrix", m_projMatrix);
 
-    _modelMatrix = glm::mat4(1.0f);
-    _modelMatrix = glm::translate(_modelMatrix, light_pos);
-    m_sunShader.setUniformMatrix(f, "_modelMatrix", _modelMatrix);
     f->glBindVertexArray(m_vao);
     f->glDrawArrays(GL_TRIANGLES, 0, 36);
-    m_sunShader.end();
+    f->glBindVertexArray(0);
 
+    m_sunShader.end();
     // ---------------Draw Call end---------------
 
-    f->glBindTexture(GL_TEXTURE_2D, 0);
-    f->glBindVertexArray(0);
+
 }
 
 void GLWindow::keyPressEvent(QKeyEvent *event) {
