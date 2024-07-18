@@ -14,6 +14,12 @@ void Shader::initShader(const QByteArray& vertexSource, const QByteArray& fragme
     m_program->link();
 }
 
+void Shader::initShader(const char* vertexFile, const char* fragmentFile) {
+    m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, readShaderFile(vertexFile));
+    m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, readShaderFile(fragmentFile));
+    m_program->link();
+}
+
 void Shader::releaseShader() {
     delete m_program;
 }

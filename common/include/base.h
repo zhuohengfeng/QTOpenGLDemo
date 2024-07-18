@@ -15,6 +15,8 @@
 #include <QElapsedTimer>
 #include <QKeyEvent>
 #include <QMouseEvent>
+#include <QFile>
+#include <QTextStream>
 
 #include "ffImage.h"
 #include "camera.h"
@@ -39,6 +41,27 @@ static QByteArray versionedShaderCode(const char *src)
     versionedSrc.append(src);
     return versionedSrc;
 }
+
+static char* readShaderFile(const QString& fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        return nullptr;
+    }
+
+    QTextStream in(&file);
+    QString fileContent = in.readAll();
+
+    QByteArray byteArray = fileContent.toUtf8();
+    char* charArray = new char[byteArray.size() + 1];
+    strcpy(charArray, byteArray.constData());
+
+    file.close();
+
+    return charArray;
+}
+
 
 static void setMatrix(QOpenGLExtraFunctions* f, const std::string & _name , glm::mat4 _matrix)
 {

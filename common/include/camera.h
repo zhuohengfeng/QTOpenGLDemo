@@ -35,6 +35,11 @@ public:
         return m_position;
     }
 
+    glm::vec3 getDirection() const
+    {
+        return m_front;
+    }
+
     void setSpeed(float speed) {
         m_speed = speed;
     }
