@@ -13,7 +13,6 @@ static const char* vertexShaderSource = R"(
 
 static const char *fragmentShaderSource = R"(
     out vec4 FragColor;
-    uniform vec4 ourColor;
     in vec4 outColor;
     void main()
     {

@@ -23,6 +23,7 @@ public:
     void setUniformMatrix(QOpenGLExtraFunctions* f, const char* _name , glm::mat4 _matrix)const;
     void setUniformVec3(QOpenGLExtraFunctions* f, const char* _name, glm::vec3 _vec3)const;
     void setUniformFloat(QOpenGLExtraFunctions* f, const char* _name, float _f)const;
+    void setUniformInt(QOpenGLExtraFunctions* f, const char* _name, int _i)const;
 
 private:
     QOpenGLShaderProgram* m_program;

@@ -42,10 +42,8 @@ const static char* cubeFragmentShaderStr = R"(
 
     struct Material
     {
-        vec3 m_ambient;
-        vec3 m_diffuse;
-        vec3 m_specular;
-
+        sampler2D   m_diffuse;
+        sampler2D   m_specular;
         float m_shiness;
     };
     uniform Material myMaterial;
@@ -66,13 +64,13 @@ const static char* cubeFragmentShaderStr = R"(
     void main()
     {
         //环境光
-        vec3 _ambient = myLight.m_ambient * myMaterial.m_ambient;
+        vec3 _ambient = myLight.m_ambient * vec3(texture(myMaterial.m_diffuse , outUV));
 
         //漫反射
         vec3 _normal = normalize(outNormal);
         vec3 _lightDir = normalize(myLight.m_pos - outFragPos); // 光入射方向
         float _diff = max(dot(_normal , _lightDir) , 0.0f); // 入射光线和法线的夹角大小
-        vec3 _diffuse = myLight.m_diffuse * _diff * myMaterial.m_diffuse;
+        vec3 _diffuse = myLight.m_diffuse * _diff * vec3(texture(myMaterial.m_diffuse , outUV));
 
         //镜面反射
         float _specular_strength = 0.5;
@@ -81,7 +79,7 @@ const static char* cubeFragmentShaderStr = R"(
 
         float _spec = pow(max(dot(_viewDir , _reflectDir) , 0.0f) , myMaterial.m_shiness); // 计算反射强度
 
-        vec3 _sepcular = myLight.m_specular * _spec * myMaterial.m_specular; // 镜面反射大小
+        vec3 _sepcular = myLight.m_specular * _spec * vec3(texture(myMaterial.m_specular , outUV)); // 镜面反射大小，使用光照贴图，中间黑色部分都是0，所以就没有镜面反射
 
         vec3 result = _ambient  + _diffuse + _sepcular;
         FragColor = texture(ourTexture , outUV) * vec4(result ,1.0f);

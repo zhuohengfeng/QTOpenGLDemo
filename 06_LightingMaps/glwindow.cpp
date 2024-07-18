@@ -7,11 +7,13 @@
 
 GLWindow::GLWindow() {
     resize(WIDTH, HEIGHT);
+
     m_camera.lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     m_camera.setSpeed(0.05f);
+
     m_projMatrix = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 
-    light_pos = glm::vec3(1.2f, 1.0f, 2.0f);
+    light_pos = glm::vec3(0.0f, 1.0f, 5.0f);
     light_color = glm::vec3(1.0, 1.0f, 1.0f);
 }
 
@@ -24,17 +26,29 @@ GLWindow::~GLWindow() {
 void GLWindow::initializeGL() {
     QOpenGLExtraFunctions* f = QOpenGLContext::currentContext()->extraFunctions();
 
-    // 绑定纹理
-    m_Image = ffImage::readFromFile("../../resource/wall.jpg");
-    f->glGenTextures(1, &m_texture);
-    f->glBindTexture(GL_TEXTURE_2D, m_texture);
+    // 边框金属反光光照贴图
+    m_boardImage = ffImage::readFromFile("../../resource/specular.png");
+    f->glGenTextures(1, &m_boardTexture);
+    f->glBindTexture(GL_TEXTURE_2D, m_boardTexture);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    f->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Image->getWidth(), m_Image->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, m_Image->getData());
+    f->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_boardImage->getWidth(), m_boardImage->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, m_boardImage->getData());
     f->glBindTexture(GL_TEXTURE_2D, 0);
-    qDebug() << "Image w=" << m_Image->getWidth() << ", h=" << m_Image->getHeight();
+    qDebug() << "m_boardImage w=" << m_boardImage->getWidth() << ", h=" << m_boardImage->getHeight();
+
+    // 箱体的贴图绑定纹理
+    m_boxImage = ffImage::readFromFile("../../resource/box.png");
+    f->glGenTextures(1, &m_boxTexture);
+    f->glBindTexture(GL_TEXTURE_2D, m_boxTexture);
+    f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    f->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_boxImage->getWidth(), m_boxImage->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, m_boxImage->getData());
+    f->glBindTexture(GL_TEXTURE_2D, 0);
+    qDebug() << "m_boxImage w=" << m_boxImage->getWidth() << ", h=" << m_boxImage->getHeight();
 
     // 绑定VAO VBO
     f->glGenVertexArrays(1, &m_vao);
@@ -69,18 +83,15 @@ void GLWindow::resizeGL(int w, int h) {
 void GLWindow::paintGL() {
     QOpenGLExtraFunctions* f = QOpenGLContext::currentContext()->extraFunctions();
 
-
     f->glEnable(GL_DEPTH_TEST);
     f->glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_camera.update();
-
-    // ---------------Draw Call start---------------
-    m_projMatrix = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
     glm::mat4 _modelMatrix(1.0f);
     _modelMatrix = glm::translate(_modelMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
 
+    // ---------------Draw Call start---------------
 
 
     // ---------------绘制有光照效果的立方体---------------
@@ -94,10 +105,9 @@ void GLWindow::paintGL() {
     m_cubeShader.setUniformVec3(f, "myLight.m_specular", light_color * glm::vec3(1.0f)); // 0.5f
     m_cubeShader.setUniformVec3(f, "myLight.m_pos", light_pos);
 
-    //传入物体材质属性
-    m_cubeShader.setUniformVec3(f, "myMaterial.m_ambient", glm::vec3(0.1f));
-    m_cubeShader.setUniformVec3(f, "myMaterial.m_diffuse", glm::vec3(0.7f)); // 0.7f
-    m_cubeShader.setUniformVec3(f, "myMaterial.m_specular", glm::vec3(1.0f)); // 0.8f
+    //传入物体材质属性, 这里不指定物体材质的环境光和漫反射的颜色
+    m_cubeShader.setUniformInt(f, "myMaterial.m_diffuse", 0); // 环境光和漫反射使用光照贴图texture0
+    m_cubeShader.setUniformInt(f, "myMaterial.m_specular", 1); // 使用光照贴图texture1
     m_cubeShader.setUniformFloat(f, "myMaterial.m_shiness" , 256); // 32
 
     m_cubeShader.setUniformMatrix(f, "_modelMatrix", _modelMatrix);
@@ -105,7 +115,10 @@ void GLWindow::paintGL() {
     m_cubeShader.setUniformMatrix(f, "_projMatrix", m_projMatrix);
     // 绑定纹理
     f->glBindVertexArray(m_vao);
-    f->glBindTexture(GL_TEXTURE_2D, m_texture);
+    f->glActiveTexture(GL_TEXTURE0);
+    f->glBindTexture(GL_TEXTURE_2D, m_boxTexture);
+    f->glActiveTexture(GL_TEXTURE1);
+    f->glBindTexture(GL_TEXTURE_2D, m_boardTexture);
     f->glDrawArrays(GL_TRIANGLES, 0, 36);
     f->glBindTexture(GL_TEXTURE_2D, 0);
     f->glBindVertexArray(0);

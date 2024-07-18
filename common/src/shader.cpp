@@ -37,3 +37,7 @@ void Shader::setUniformVec3(QOpenGLExtraFunctions* f, const char* _name, glm::ve
 void Shader::setUniformFloat(QOpenGLExtraFunctions* f, const char* _name, float _f) const {
     f->glUniform1f(m_program->uniformLocation(_name), _f);
 }
+
+void Shader::setUniformInt(QOpenGLExtraFunctions* f, const char* _name, int _i) const {
+    f->glUniform1i(m_program->uniformLocation(_name), _i);
+}

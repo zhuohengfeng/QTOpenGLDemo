@@ -7,7 +7,7 @@
 
 #include "base.h"
 
-// 立方体顶点 position  uv  normal
+// 立方体顶点: position, uv, normal
 const float vertices[] = {
     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,           0.0f,  0.0f, -1.0f,
     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,           0.0f,  0.0f, -1.0f,
@@ -81,8 +81,13 @@ private:
     glm::vec3 light_pos;
     glm::vec3 light_color;
 
-    GLuint m_texture;
-    ffImage* m_Image{nullptr};
+    // 箱体的贴图
+    GLuint m_boxTexture;
+    ffImage* m_boxImage{nullptr};
+
+    // 边框金属反光光照贴图
+    GLuint m_boardTexture;
+    ffImage* m_boardImage{nullptr};
 
     GLuint m_vbo;
     GLuint m_vao;
