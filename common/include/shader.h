@@ -13,6 +13,7 @@ public:
     void createShader();
 
     void initShader(const QByteArray& vertexSource, const QByteArray& fragmentSource);
+    void initShader(const char* vertexFile, const char* fragmentFile);
 
     void releaseShader();
 
