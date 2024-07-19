@@ -42,7 +42,10 @@ void main()
     //边缘模糊系数
     vec3 _lightDir = normalize(myLight.m_pos - outFragPos);
     vec3 _spotDir= normalize(myLight.m_direction);
+
     float cosTheta = dot(_lightDir , -_spotDir);
+
+    // 12.5~25.5度
     float epsilon = myLight.m_cutOff - myLight.m_outCutOff;
     float intensity = clamp((cosTheta - myLight.m_outCutOff) / epsilon , 0.0f , 1.0f);
 
@@ -67,6 +70,7 @@ void main()
 
     vec3 _sepcular = myLight.m_specular * _spec * vec3(texture(myMaterial.m_specular , outUV));
 
+    // 限制聚光的范围
     _diffuse *= intensity;
     _sepcular *= intensity;
 

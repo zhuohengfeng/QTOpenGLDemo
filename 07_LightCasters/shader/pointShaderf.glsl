@@ -22,6 +22,7 @@ struct Light
     vec3 m_diffuse;
     vec3 m_specular;
 
+    // 衰减系数 1 /mc+ ml * dsit + mq *dist * dist
     float m_c;
     float m_l;
     float m_q;
