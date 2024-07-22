@@ -179,7 +179,6 @@ void GLWindow::paintGL() {
     f->glStencilFunc(GL_ALWAYS, 0x1,  0xff);
     f->glStencilMask(0xff);
     f->glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-//    f->glStencilOp();
 
     f->glDrawArrays(GL_TRIANGLES, 0, 36);
 
@@ -196,8 +195,10 @@ void GLWindow::paintGL() {
     f->glBindVertexArray(m_vao);
     _modelMatrix = glm::mat4(1.0f);
     _modelMatrix = glm::rotate(_modelMatrix, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    _modelMatrix = glm::scale(_modelMatrix, glm::vec3(1.2f));
+    _modelMatrix = glm::scale(_modelMatrix, glm::vec3(1.02f));
 
+    //
+    f->glDisable(GL_DEPTH_TEST);
     f->glStencilFunc(GL_NOTEQUAL, 0x1,  0xff);
     f->glStencilMask(0x00);
 
@@ -207,6 +208,7 @@ void GLWindow::paintGL() {
     f->glBindVertexArray(0);
     m_boardShader.end();
     // ---------------Draw Call end---------------
+
     f->glStencilMask(0xFF);
     f->glStencilFunc(GL_ALWAYS, 0, 0xFF);
     f->glEnable(GL_DEPTH_TEST);
